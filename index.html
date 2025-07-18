@@ -1,196 +1,132 @@
-<!doctype html>
-<html>
-
+<!DOCTYPE html>
+<html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>莹莹平安喜乐</title>
-
-    <!-- 双保险设置 favicon，确保在 GitHub Pages 上正常显示 -->
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-
-    <style>
-        .div {
-            perspective: 500;
-            width: 100%;
-            height: 100%;
-            animation: float 1.75s infinite linear;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .rotate {
-            max-width: 250px;
-            max-height: 250px;
-            animation: rotate 1.75s infinite linear;
-            object-fit: contain;
-        }
-
-        @keyframes rotate {
-            0% {
-                transform: rotateY(360deg);
-            }
-
-            25% {
-                transform: rotateY(270deg);
-            }
-
-            50% {
-                transform: rotateY(180deg);
-            }
-
-            75% {
-                transform: rotateY(90deg);
-            }
-
-            100% {
-                transform: rotateY(0deg);
-            }
-        }
-
-        .shadow {
-            width: 128px;
-            height: 128px;
-            margin-left: calc(50% - 64px);
-            border-radius: 128px;
-            background-color: #999999;
-            transform: rotateX(75deg);
-            animation: blur 1.75s infinite linear;
-        }
-
-        @keyframes blur {
-            0%,
-            100% {
-                filter: blur(48px);
-            }
-
-            50% {
-                filter: blur(24px);
-            }
-        }
-
-        @keyframes float {
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(24px);
-            }
-        }
-
-        .button {
-            position: fixed;
-            right: 0;
-            bottom: 0;
-            border: none;
-            padding: 8px 16px;
-            background: white;
-            border-radius: 8px 0 0 0;
-            transition: 0.1s;
-        }
-
-        .playButton {
-            position: fixed;
-            right: 0;
-            top: 0;
-            border: none;
-            padding: 8px 16px;
-            background: white;
-            border-radius: 0 0 8px 0;
-            transition: 0.1s;
-        }
-
-        .button:active,
-        .playButton:active {
-            background: rgba(0, 0, 0, 0.2);
-        }
-
-        .button,
-        .playButton {
-            border-radius: 8px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>我的网页</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+    }
+    .mumu {
+      width:80px;
+      height:80px;
+      cursor:move;
+      background:url(https://img.alicdn.com/imgextra/i2/2210123621994/O1CN019ne3h11QbIltvPjB8_!!2210123621994.gif) no-repeat;
+    }
+    .spig {
+      display:block;
+      width:150px;
+      position:absolute;
+      top:-200px;
+      left:160px;
+      z-index:9999;
+    }
+    #newmessage {
+      color:#191919;
+      border:1px solid #c4c4c4;
+      background:#ddd;
+      border-radius:5px;
+      padding:5px;
+      top:-30px;
+      position:absolute;
+      text-align:center;
+      z-index:10000;
+      box-shadow:0 0 15px #eee;
+      outline:none;
+    }
+  </style>
 </head>
-
 <body>
-    <h2 style="text-align: center; margin: 32px 0;" id="title">小莹莹的平安符</h2>
-    <div class="div">
-        <img src="yy.png" class="rotate" id="rotate" alt="旋转图">
-    </div>
-    <div class="shadow"></div>
-    <h3 style="margin: 16px; text-align: center;" id="timer"></h3>
-    <p style="margin: 16px; text-align: center;">👆你已经看了多久啦？👆</p>
-    <button class="button" id="switchModeBtn">当前状态：自动旋转</button>
-    <button class="playButton" id="playPauseBtn">当前音乐：暂停</button>
 
-    <audio src="yy.mp3" id="music" autoplay loop></audio>
+  <!-- 页面内容 -->
+  <h1 style="text-align:center; padding-top:50px;">欢迎来到我的网页</h1>
 
-    <script>
-        let startTime = new Date();
-        let mode = "auto";
-        let speed = "slow";
-        let tran = 1.75;
-        const timerElement = document.getElementById("timer");
-        const rotateElement = document.getElementById("rotate");
-        const btn = document.getElementById('switchModeBtn');
-        const playPauseBtn = document.getElementById('playPauseBtn');
-        const music = document.getElementById('music');
+  <!-- 小玩偶插件 -->
+  <div id="spig" class="spig">
+    <div id="newmessage">Loading...</div>
+    <div id="mumu" class="mumu"></div>
+  </div>
 
-        function updateTimer() {
-            const nowTime = new Date();
-            const runTime = Math.floor((nowTime - startTime) / 1000);
-            const runD = Math.floor(runTime / (24 * 60 * 60));
-            const runH = String(Math.floor((runTime / (60 * 60)) % 24)).padStart(2, '0');
-            const runM = String(Math.floor((runTime / 60) % 60)).padStart(2, '0');
-            const runS = String(runTime % 60).padStart(2, '0');
-            timerElement.innerHTML = `${runD} : ${runH} : ${runM} : ${runS}`;
+  <!-- 脚本 -->
+  <script src="https://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
+  <script>
+    var visitor = '欢迎光临';
+    var onoff_move = 1;
+    var stat_click = 0;
+    var ismove = false;
+    var msgs = {
+      right_click: "你想干啥呀？",
+      over: ["我隐身了，你看不到我", "别动手动脚的，把手拿开！"],
+      bored: ["陪我聊天吧！", "好无聊哦，你都不陪我玩！", "求抱抱~"],
+      move: ["我在飞，啦啦啦！", "快去凑热闹哦"],
+      touch: ["不要摸我", "非礼呀！！！！！"]
+    };
+
+    function showMessage(a, b) {
+      if (b == null) b = 10000;
+      $("#newmessage").stop().hide().html(a).fadeIn().fadeTo("1", 1).fadeOut(b);
+    }
+
+    $(function () {
+      let now = new Date().getHours();
+      if (now >= 0 && now <= 5) showMessage(visitor + ' 夜猫还不睡觉？');
+      else if (now <= 10) showMessage(visitor + ' 早上好呀~');
+      else if (now <= 13) showMessage(visitor + ' 中午了，记得吃饭！');
+      else if (now <= 17) showMessage(visitor + ' 下午好，摸鱼时间？');
+      else if (now <= 23) showMessage(visitor + ' 夜深了，早点休息~');
+      else showMessage(visitor + ' 快来逗我玩吧~');
+
+      // 移动动画
+      setInterval(() => {
+        if (!onoff_move) return;
+        let i = Math.floor(Math.random() * msgs.move.length);
+        let x = Math.random() * ($(window).width() - 160);
+        let y = Math.random() * ($(window).height() - 160);
+        $(".spig").animate({ left: x, top: y }, { duration: 2000, complete: () => showMessage(msgs.move[i]) });
+      }, 45000);
+
+      // 悬停
+      $(".mumu").hover(
+        () => showMessage(msgs.over[Math.floor(Math.random() * msgs.over.length)]),
+        () => $(".mumu").fadeTo(300, 1)
+      );
+
+      // 点击互动
+      $(".mumu").click(() => {
+        stat_click++;
+        let i = Math.floor(Math.random() * msgs.touch.length);
+        if (stat_click > 4) showMessage("你已经摸我 " + stat_click + " 次了！");
+        else showMessage(msgs.touch[i]);
+        if (onoff_move) {
+          let x = Math.random() * ($(window).width() - 160);
+          let y = Math.random() * ($(window).height() - 160);
+          $(".spig").animate({ left: x, top: y }, 500);
         }
+      });
 
-        setInterval(updateTimer, 1000);
+      // 拖动
+      let _move = false, _x = 0, _y = 0;
+      $("#spig").mousedown(e => {
+        _move = true;
+        _x = e.pageX - parseInt($("#spig").css("left"));
+        _y = e.pageY - parseInt($("#spig").css("top"));
+      });
+      $(document).mousemove(e => {
+        if (_move) {
+          let x = e.pageX - _x;
+          let y = e.pageY - _y;
+          $("#spig").css({ top: y, left: x });
+          ismove = true;
+        }
+      }).mouseup(() => { _move = false; });
 
-        btn.addEventListener("click", () => {
-            mode = mode === "auto" ? "self" : "auto";
-            btn.innerHTML = `当前状态：${mode === "auto" ? "自动旋转" : "手动旋转"}`;
-            if (mode === "auto") {
-                tran = 1.75;
-            }
-        });
-
-        playPauseBtn.addEventListener("click", () => {
-            if (music.paused) {
-                music.play();
-                playPauseBtn.innerHTML = "当前音乐：播放";
-            } else {
-                music.pause();
-                playPauseBtn.innerHTML = "当前音乐：暂停";
-            }
-        });
-
-        document.documentElement.addEventListener("mousedown", () => {
-            if (mode === "self") speed = "fast";
-        });
-
-        document.documentElement.addEventListener("mouseup", () => {
-            if (mode === "self") speed = "slow";
-        });
-
-        setInterval(() => {
-            if (mode === "auto") {
-                rotateElement.style.animationDuration = tran + "s";
-            } else if (mode === "self") {
-                if (speed === "fast" && tran > 0.01) {
-                    tran -= 0.001;
-                } else if (speed === "slow") {
-                    tran += 0.001;
-                }
-                rotateElement.style.animationDuration = tran + "s";
-            }
-        }, 10);
-    </script>
+      // 初始位置
+      $(".spig").animate({ top: 300, left: $(window).width() - 160 }, 1000);
+    });
+  </script>
 </body>
-
 </html>
