@@ -4,8 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
     <title>莹莹平安喜乐</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
     <style>
         .div {
             perspective: 500;
@@ -100,13 +101,11 @@
             transition: 0.1s;
         }
 
-        /* 按钮按下效果 */
         .button:active,
         .playButton:active {
             background: rgba(0, 0, 0, 0.2);
         }
 
-        /* 圆角按钮效果 */
         .button,
         .playButton {
             border-radius: 8px;
@@ -117,7 +116,7 @@
 <body>
     <h2 style="text-align: center; margin: 32px 0;" id="title">小莹莹的平安符</h2>
     <div class="div">
-        <img src="./yy.png" class="rotate" id="rotate">
+        <img src="yy.png" class="rotate" id="rotate" alt="旋转图">
     </div>
     <div class="shadow"></div>
     <h3 style="margin: 16px; text-align: center;" id="timer"></h3>
@@ -125,13 +124,13 @@
     <button class="button" id="switchModeBtn">当前状态：自动旋转</button>
     <button class="playButton" id="playPauseBtn">当前音乐：暂停</button>
 
-    <audio src="./yy.mp3" id="music" autoplay loop></audio>
+    <audio src="yy.mp3" id="music" autoplay loop></audio>
 
     <script>
         let startTime = new Date();
         let mode = "auto";
         let speed = "slow";
-        let tran = 1.75; // 初始速度
+        let tran = 1.75;
         const timerElement = document.getElementById("timer");
         const rotateElement = document.getElementById("rotate");
         const btn = document.getElementById('switchModeBtn');
@@ -154,7 +153,7 @@
             mode = mode === "auto" ? "self" : "auto";
             btn.innerHTML = `当前状态：${mode === "auto" ? "自动旋转" : "手动旋转"}`;
             if (mode === "auto") {
-                tran = 1.75; // 恢复自动旋转的速度
+                tran = 1.75;
             }
         });
 
@@ -185,7 +184,7 @@
                 } else if (speed === "slow") {
                     tran += 0.001;
                 }
-                rotateElement.style.animationDuration = tran + "s"; // 更新手动旋转的速度
+                rotateElement.style.animationDuration = tran + "s";
             }
         }, 10);
     </script>
