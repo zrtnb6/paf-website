@@ -113,7 +113,51 @@
         .playButton {
             border-radius: 8px;
         }
+        
+        /* 玩偶样式 */
+        .mumu {
+            width: 80px;
+            height: 80px;
+            cursor: move;
+            background: url(https://img.alicdn.com/imgextra/i2/2210123621994/O1CN019ne3h11QbIltvPjB8_!!2210123621994.gif) no-repeat;
+            background-size: cover;
+        }
+        
+        .spig {
+            display: block;
+            width: 150px;
+            height: auto;
+            position: absolute;
+            top: 100px;
+            left: 100px;
+            z-index: 9999;
+        }
+        
+        #newmessage {
+            color: #191919;
+            border: 1px solid #c4c4c4;
+            background: #fff;
+            border-radius: 12px;
+            min-height: 1em;
+            padding: 8px 15px;
+            top: -45px;
+            position: absolute;
+            text-align: center;
+            width: auto !important;
+            z-index: 10000;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            font-size: 14px;
+            max-width: 200px;
+            word-wrap: break-word;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            left: 50%;
+            transform: translateX(-50%);
+        }
     </style>
+    
+    <!-- 引入jQuery库 -->
+    <script src="https://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
 </head>
 
 <body>
@@ -128,8 +172,15 @@
     <button class="playButton" id="playPauseBtn">当前音乐：暂停</button>
 
     <audio src="yy.mp3" id="music" autoplay loop></audio>
+    
+    <!-- 玩偶HTML结构 -->
+    <div id="spig" class="spig">
+        <div id="newmessage"></div>
+        <div id="mumu" class="mumu"></div>
+    </div>
 
     <script>
+        // 原有代码
         let startTime = new Date();
         let mode = "auto";
         let speed = "slow";
@@ -190,7 +241,135 @@
                 rotateElement.style.animationDuration = tran + "s";
             }
         }, 10);
+        
+        // 玩偶交互代码
+        $(document).ready(function () {
+            // 初始化变量
+            const right_click = '你想干啥呀？';
+            const onoff_move = '1';
+            const touch_array = ["不要摸我", "再摸我，我就杀掉你！", "干嘛老摸我啊？", "非礼呀！！！！！", "我可以告你性侵犯吗？", "色狼啊啊！"];
+            const bored_array = ["陪我聊天吧！", "好无聊哦，你都不陪我玩！", "啦啦啦！！！", "我可爱吧！嘻嘻!~^_^!~~", "求抱抱，么么！！"];
+            const move_array = ["我在飞，啦啦啦啦！", "看，我在玩凌波微步！", "快去凑热闹哦", "站住，不要跑！@_@", "围观去咯！", "跑不动啦！累死我了！"];
+            const over_array = ["我隐身了，你看不到我", "我会隐身哦！嘿嘿！", "别动手动脚的，把手拿开！", "把手拿开我才出来！", "真忍术隐！"];
+            const visitor = '欢迎光临';
+            
+            // 右键菜单处理
+            $("#spig").mousedown(function (e) {
+                if (e.which == 3) {
+                    showMessage(right_click, 10000);
+                }
+            });
+            
+            $("#spig").bind("contextmenu", function (e) {
+                return false;
+            });
+            
+            // 鼠标在玩偶上时
+            $(".mumu").mouseover(function () {
+                $(".mumu").fadeTo(300, 0.3);
+                showMessage(over_array[Math.floor(Math.random() * over_array.length)]);
+            });
+            
+            $(".mumu").mouseout(function () {
+                $(".mumu").fadeTo(300, 1);
+            });
+            
+            // 根据时间显示欢迎消息
+            const now = (new Date()).getHours();
+            let welcomeMsg = visitor + ' 快来逗我玩吧！';
+            
+            if (now > 0 && now <= 5) welcomeMsg = visitor + ' 夜猫还不睡觉？';
+            else if (now > 5 && now <= 6) welcomeMsg = visitor + ' 新的一天开始了哦!';
+            else if (now > 6 && now <= 10) welcomeMsg = visitor + ' 早上好！';
+            else if (now > 10 && now <= 13) welcomeMsg = visitor + ' 中午了，吃饭了么？';
+            else if (now > 13 && now <= 16) welcomeMsg = visitor + ' 下午的时光真难熬！';
+            else if (now > 21 && now <= 23) welcomeMsg = visitor + ' 夜深了，还不睡嘛？';
+            
+            showMessage(welcomeMsg, 6000);
+            
+            // 无聊时自动讲话
+            setInterval(() => {
+                showMessage(bored_array[Math.floor(Math.random() * bored_array.length)], 10000);
+            }, 35000);
+            
+            // 无聊时自动移动
+            setInterval(() => {
+                if (onoff_move != 0) {
+                    const s = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.75, -0.1, -0.2, -0.3, -0.4, -0.5, -0.6, -0.7, -0.75];
+                    const i1 = Math.floor(Math.random() * s.length);
+                    
+                    $(".spig").animate({
+                        left: document.body.offsetWidth / 2 * (1 + s[i1]),
+                        top: document.body.offsetHeight / 2 * (1 + s[i1])
+                    }, {
+                        duration: 2000,
+                        complete: showMessage(move_array[Math.floor(Math.random() * move_array.length)])
+                    });
+                }
+            }, 45000);
+            
+            // 鼠标点击处理
+            let stat_click = 0;
+            $(".mumu").click(function () {
+                if (!ismove) {
+                    stat_click++;
+                    let msgs;
+                    if (stat_click > 4) {
+                        msgs = ["你有完没完呀？", "你已经摸我" + stat_click + "次了", "非礼呀！救命!"];
+                    } else {
+                        msgs = touch_array;
+                    }
+                    
+                    if (onoff_move != 0) {
+                        const s = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.75, -0.1, -0.2, -0.3, -0.4, -0.5, -0.6, -0.7, -0.75];
+                        const i1 = Math.floor(Math.random() * s.length);
+                        
+                        $(".spig").animate({
+                            left: document.body.offsetWidth / 2 * (1 + s[i1]),
+                            top: document.body.offsetHeight / 2 * (1 + s[i1])
+                        }, {
+                            duration: 500,
+                            complete: showMessage(msgs[Math.floor(Math.random() * msgs.length)])
+                        });
+                    }
+                } else {
+                    ismove = false;
+                }
+            });
+            
+            // 拖动处理
+            let _move = false;
+            let ismove = false;
+            let _x, _y;
+            
+            $("#spig").mousedown(function (e) {
+                _move = true;
+                _x = e.pageX - parseInt($("#spig").css("left"));
+                _y = e.pageY - parseInt($("#spig").css("top"));
+            });
+            
+            $(document).mousemove(function (e) {
+                if (_move) {
+                    const x = e.pageX - _x;
+                    const y = e.pageY - _y;
+                    const wx = $(window).width() - $('#spig').width();
+                    const dy = $(document).height() - $('#spig').height();
+                    
+                    if (x >= 0 && x <= wx && y > 0 && y <= dy) {
+                        $("#spig").css({ top: y, left: x });
+                        ismove = true;
+                    }
+                }
+            }).mouseup(function () {
+                _move = false;
+            });
+        });
+        
+        // 显示消息函数
+        function showMessage(a, b = 10000) {
+            $("#newmessage").hide().stop().html(a).fadeIn().fadeTo(1, 1);
+            setTimeout(() => $("#newmessage").fadeOut(500), b - 500);
+        }
     </script>
 </body>
-
 </html>
